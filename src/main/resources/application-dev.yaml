@@ -3,3 +3,10 @@ spring:
     url: jdbc:postgresql://localhost:5438/postgres
     username: postgres
     password: postgres
+  jpa:
+    properties:
+      hibernate:
+        default_schema: public
+springdoc:
+  swagger-ui:
+    enabled: true

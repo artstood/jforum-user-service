@@ -3,9 +3,20 @@ databaseChangeLog:
       id: 0
       author: artstood
       changes:
-        - sql:
-            dbms: postgresql
-            endDelimiter: ";"
-            splitStatements: true
-            sql: |
-              CREATE SCHEMA userdb
+        - createTable:
+            tableName: user
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    unique: true
+                    primaryKey: true
+              - column:
+                  name: username
+                  type: text
+                  constraints:
+                    unique: true
+              - column:
+                  name: password
+                  type: text
