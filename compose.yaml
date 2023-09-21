@@ -5,9 +5,26 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DATABASE_NAME=postgres
+    ports:
+      - "5432:5432"
     logging:
       options:
         max-size: 10m
         max-file: "3"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+  user-service:
+    build:
+      dockerfile: Dockerfile
+    container_name: JForum-user-service
     ports:
-      - '5438:5432'
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://host.docker.internal:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+volumes:
+  postgres-data:
