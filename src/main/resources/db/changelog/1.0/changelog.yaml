@@ -20,3 +20,144 @@ databaseChangeLog:
               - column:
                   name: password
                   type: text
+  - changeSet:
+      id: 1
+      author: artstood
+      changes:
+        - renameColumn:
+            tableName: user
+            oldColumnName: username
+            newColumnName: name
+  - changeSet:
+      id: 2
+      author: artstood
+      changes:
+        - addColumn:
+            tableName: user
+            columns:
+              - column:
+                  name: email
+                  type: text
+                  constraints:
+                    unique: true
+              - column:
+                  name: user_tag
+                  type: text
+                  constraints:
+                    unique: true
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: location
+                  type: text
+              - column:
+                  name: website
+                  type: text
+              - column:
+                  name: birth_date
+                  type: date
+              - column:
+                  name: join_date
+                  type: date
+  - changeSet:
+      id: 3
+      author: artstood
+      changes:
+        - createTable:
+            tableName: user_profile
+            columns:
+              - column:
+                  name: id
+                  type: serial
+                  constraints:
+                    unique: true
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: bigint
+              - column:
+                  name: description
+                  type: text
+              - column:
+                  name: location
+                  type: text
+              - column:
+                  name: website
+                  type: text
+              - column:
+                  name: avatar
+                  type: text
+              - column:
+                  name: banner
+                  type: text
+              - column:
+                  name: birth_date
+                  type: date
+              - column:
+                  name: join_date
+                  type: date
+  - changeSet:
+      id: 5
+      author: artstood
+      changes:
+        - sql: "INSERT INTO public.user_profile (user_id, description, location, website, birth_date, join_date)
+SELECT id AS user_id, description, location, website, birth_date, join_date FROM public.user;"
+  - changeSet:
+      id: 6
+      author: artstood
+      changes:
+        - dropColumn:
+            tableName: user
+            columnName: description
+        - dropColumn:
+            tableName: user
+            columnName: location
+        - dropColumn:
+            tableName: user
+            columnName: website
+        - dropColumn:
+            tableName: user
+            columnName: birth_date
+        - dropColumn:
+            tableName: user
+            columnName: join_date
+  - changeSet:
+      id: 7
+      author: artstood
+      changes:
+        - addUniqueConstraint:
+            tableName: user
+            columnNames: email, user_tag
+  - changeSet:
+      id: 8
+      author: artstood
+      changes:
+        - createIndex:
+            indexName: idx_user_user_tag
+            tableName: user
+            columns:
+              - column:
+                  name: user_tag
+        - createIndex:
+            indexName: idx_user_profile_id
+            tableName: user_profile
+            columns:
+              - column:
+                  name: id
+  - changeSet:
+      id: 9
+      author: artstood
+      changes:
+        - dropUniqueConstraint:
+            tableName: user
+            constraintName: user_username_key
+  - changeSet:
+      id: 10
+      author: artstood
+      changes:
+        - dropColumn:
+            tableName: user_profile
+            columns:
+              - column:
+                  name: user_id

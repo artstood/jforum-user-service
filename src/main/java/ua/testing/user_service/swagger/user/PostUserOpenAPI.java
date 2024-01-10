@@ -20,7 +20,7 @@ import java.lang.annotation.Target;
         @ApiResponse(responseCode = "201", description = "User created",
                 content = {@Content(mediaType = "application/json",
                         schema = @Schema(implementation = UserResponse.class))}),
-        @ApiResponse(responseCode = "400", description = "Username already taken",
+        @ApiResponse(responseCode = "400", description = "User with email already exist",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = SimpleErrorResponse.class)))})
 public @interface PostUserOpenAPI {

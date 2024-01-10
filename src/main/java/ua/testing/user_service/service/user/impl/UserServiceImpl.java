@@ -1,36 +1,53 @@
 package ua.testing.user_service.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.NotImplementedException;
-import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
-import ua.testing.user_service.mapper.UserPersistenceMapper;
+import ua.testing.user_service.mapper.user.UserPersistenceMapper;
+import ua.testing.user_service.model.profile.Profile;
 import ua.testing.user_service.model.user.PasswordUser;
 import ua.testing.user_service.model.user.User;
 import ua.testing.user_service.model.user.UserData;
 import ua.testing.user_service.repository.UserRepository;
 import ua.testing.user_service.service.exception.UserNotFoundException;
 import ua.testing.user_service.service.exception.UsernameTakenException;
+import ua.testing.user_service.service.profile.ProfileService;
 import ua.testing.user_service.service.user.UserService;
+import ua.testing.user_service.service.user.UserTagService;
+import ua.testing.user_service.utils.StringUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
+
+    private final UserTagService userTagService;
+
+    private final ProfileService profileService;
+
     private final UserPersistenceMapper userPersistenceMapper;
 
     private final UserRepository userRepository;
 
-    private static final String USERNAME_ALREADY_TAKEN = "Username '%s' already taken";
-    private static final String USER_NOT_FOUND = "Cannot find user under id '%s'";
+    private final StringUtils stringUtils;
+
+    private static final String EMAIL_ALREADY_PRESENT = "User with email '%s' already exist";
+    private static final String USER_NOT_FOUND = "Cannot find user under user tag '%s'";
 
     @Override
-    public User createUser(PasswordUser passwordUser) {
-        if (userRepository.existsByUsername(passwordUser.getUsername())) {
-            throw new UsernameTakenException(String.format(USERNAME_ALREADY_TAKEN, passwordUser.getUsername()));
+    public User createUser(PasswordUser passwordUser, LocalDate birthDate) {
+        if (userRepository.existsByEmail(passwordUser.getEmail())) {
+            throw new UsernameTakenException(String.format(EMAIL_ALREADY_PRESENT, passwordUser.getEmail()));
         }
+
+        passwordUser.setProfile(profileService.createNewProfile(birthDate));
+
+        passwordUser.setUserTag(userTagService.provideUniqueUserTag());
+
         UserData userData = userPersistenceMapper.mapToData(passwordUser);
+
+        userData.setPassword(stringUtils.sha256Encode(passwordUser.getPassword()));
 
         return userPersistenceMapper.mapToUser(userRepository.save(userData));
     }
@@ -41,17 +58,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> getAllUsersPageable() {
-        throw new NotImplementedException();
-    }
-
-    @Override
-    public User getUser(Long userId) {
+    public User getUser(String userTag) {
         UserData existingUser = userRepository
-                .findById(userId)
-                .orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND, userId)));
+                .findByUserTag(userTag)
+                .orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND, userTag)));
 
-        return userPersistenceMapper.mapToUser(existingUser);
+        User user = userPersistenceMapper.mapToUser(existingUser);
+
+        Profile userProfile = user.getProfile();
+
+        userProfile.setBannerFile(
+                profileService.getBanner(existingUser.getId(), stringUtils.isEmpty(userProfile.getBanner())));
+
+        userProfile.setAvatarFile(
+                profileService.getAvatar(existingUser.getId(), stringUtils.isEmpty(userProfile.getAvatar())));
+
+        return user;
     }
 
     @Override
@@ -60,8 +82,9 @@ public class UserServiceImpl implements UserService {
         if (!userRepository.existsById(userId)) {
             throw new UserNotFoundException(String.format(USER_NOT_FOUND, userId));
         }
-        if (userRepository.existsByUsername(updatedUser.getUsername())) {
-            throw new UsernameTakenException(String.format(USERNAME_ALREADY_TAKEN, updatedUser.getUsername()));
+
+        if (userRepository.existsByUserTag(updatedUser.getUserTag())) {
+            throw new UsernameTakenException(String.format(EMAIL_ALREADY_PRESENT, updatedUser.getUserTag()));
         }
 
         UserData updatedEntity = userPersistenceMapper.mapToData(updatedUser);

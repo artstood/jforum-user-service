@@ -1,19 +1,17 @@
 package ua.testing.user_service.service.user;
 
-import org.springframework.data.domain.Page;
 import ua.testing.user_service.model.user.PasswordUser;
 import ua.testing.user_service.model.user.User;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface UserService {
-    User createUser(PasswordUser passwordUser);
+    User createUser(PasswordUser passwordUser, LocalDate birthdate);
 
     List<User> getAllUsers();
 
-    Page<User> getAllUsersPageable();
-
-    User getUser(Long userId);
+    User getUser(String userTag);
 
     User updateUser(Long userId, PasswordUser updatedUser);
 

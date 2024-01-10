@@ -1,1 +1,5 @@
-
+esprit:
+  filesystem:
+    repository:
+      root: espritFileRepo
+      entities: users,posts

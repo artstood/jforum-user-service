@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "esprint.filesystem.repository.entities",
+      "type": "java.lang.String",
+      "description": "Description for esprint.filesystem.repository.entities."
+  }
+] }
