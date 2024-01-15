@@ -24,8 +24,4 @@ public class ProfileResponse {
     private LocalDate birthDate;
 
     private LocalDate joinDate;
-
-    private byte[] avatarFile;
-
-    private byte[] bannerFile;
 }

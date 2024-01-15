@@ -1,6 +1,7 @@
 package ua.testing.user_service.filesystem;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ResourceLoader;
 import ua.testing.user_service.exception.filesystem.FileSystemRepositoryException;
 import ua.testing.user_service.utils.FileSystemPropertyProvider;
 import ua.testing.user_service.utils.FileSystemUtils;
@@ -14,6 +15,8 @@ public abstract class FileSystemRepository {
     private final FileSystemPropertyProvider fsProperty;
 
     private final FileSystemUtils fsUtils;
+
+    protected final ResourceLoader resourceLoader;
 
     protected File retractFile(String tableName, Long id, String fileName) {
         File file = fsUtils.createFile(

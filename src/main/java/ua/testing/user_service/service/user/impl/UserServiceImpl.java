@@ -3,7 +3,6 @@ package ua.testing.user_service.service.user.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ua.testing.user_service.mapper.user.UserPersistenceMapper;
-import ua.testing.user_service.model.profile.Profile;
 import ua.testing.user_service.model.user.PasswordUser;
 import ua.testing.user_service.model.user.User;
 import ua.testing.user_service.model.user.UserData;
@@ -63,17 +62,7 @@ public class UserServiceImpl implements UserService {
                 .findByUserTag(userTag)
                 .orElseThrow(() -> new UserNotFoundException(String.format(USER_NOT_FOUND, userTag)));
 
-        User user = userPersistenceMapper.mapToUser(existingUser);
-
-        Profile userProfile = user.getProfile();
-
-        userProfile.setBannerFile(
-                profileService.getBanner(existingUser.getId(), stringUtils.isEmpty(userProfile.getBanner())));
-
-        userProfile.setAvatarFile(
-                profileService.getAvatar(existingUser.getId(), stringUtils.isEmpty(userProfile.getAvatar())));
-
-        return user;
+        return userPersistenceMapper.mapToUser(existingUser);
     }
 
     @Override
