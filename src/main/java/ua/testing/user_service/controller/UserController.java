@@ -1,20 +1,14 @@
 package ua.testing.user_service.controller;
 
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ua.testing.user_service.model.user.UserRequest;
 import ua.testing.user_service.model.user.UserResponse;
 import ua.testing.user_service.model.user.UserResponseShort;
-import ua.testing.user_service.swagger.user.DeleteUserOpenAPI;
-import ua.testing.user_service.swagger.user.GetAllUsersOpenAPI;
-import ua.testing.user_service.swagger.user.GetUserOpenAPI;
-import ua.testing.user_service.swagger.user.PatchUserOpenAPI;
-import ua.testing.user_service.swagger.user.PostUserOpenAPI;
+import ua.testing.user_service.model.user.UserUpdateRequest;
+import ua.testing.user_service.swagger.user.*;
 
 import java.util.List;
 
@@ -27,13 +21,22 @@ public interface UserController {
     @GetMapping()
     ResponseEntity<List<UserResponseShort>> getAllUsers();
 
+    @GetShortUserOpenAPI
+    @GetMapping("compact/{userTag}")
+    ResponseEntity<UserResponseShort> getUserCompactByUserTag(@PathVariable("userTag") String userTag);
+
+
     @GetUserOpenAPI
     @GetMapping(value = "{userTag}")
     ResponseEntity<UserResponse> getUserByUserTag(@PathVariable("userTag") String userTag);
 
-    @PatchUserOpenAPI
-    @PatchMapping("{userId}")
-    ResponseEntity<UserResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody UserRequest userRequest);
+    @PutUserOpenAPI
+    @PutMapping(value = "{userId}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    ResponseEntity<UserResponse> updateUser(
+            @PathVariable("userId") Long userId,
+            @RequestPart(name = "userUpdateRequest", required = false) UserUpdateRequest userRequest,
+            @RequestPart(name = "avatar", required = false) MultipartFile avatar,
+            @RequestPart(name = "banner", required = false) MultipartFile banner);
 
     @DeleteUserOpenAPI
     @DeleteMapping("{userId}")

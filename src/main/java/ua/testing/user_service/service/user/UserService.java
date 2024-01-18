@@ -13,7 +13,7 @@ public interface UserService {
 
     User getUser(String userTag);
 
-    User updateUser(Long userId, PasswordUser updatedUser);
+    User updateUser(Long userId, User updatedUser, byte[] avatar, byte[] banner);
 
     void deleteUser(Long userId);
 }

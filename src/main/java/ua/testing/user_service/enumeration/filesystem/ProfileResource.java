@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum ProfileMedia {
+public enum ProfileResource {
     AVATAR("avatar"),
     BANNER("banner");
 

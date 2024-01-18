@@ -1,4 +1,4 @@
-package ua.testing.user_service.swagger.user;
+package ua.testing.user_service.swagger.resource;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -6,7 +6,6 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import ua.testing.user_service.model.error.SimpleErrorResponse;
-import ua.testing.user_service.model.user.UserResponse;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,13 +14,13 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@Operation(summary = "Get user")
+@Operation(summary = "Get requested media from user profile. Resources type are ['avatar', 'banner']")
 @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Get single user by userTag",
-                content = {@Content(mediaType = "application/json",
-                        schema = @Schema(implementation = UserResponse.class))}),
-        @ApiResponse(responseCode = "400", description = "User not found",
+        @ApiResponse(responseCode = "200", description = "Returns media by user id and selected media",
+                content = {@Content(mediaType = "image/png")}),
+        @ApiResponse(responseCode = "400", description = "User with provided user tag was not found",
                 content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = SimpleErrorResponse.class)))})
-public @interface GetUserOpenAPI {
+                        schema = @Schema(implementation = SimpleErrorResponse.class)))
+})
+public @interface GetProfileResourceOpenAPI {
 }

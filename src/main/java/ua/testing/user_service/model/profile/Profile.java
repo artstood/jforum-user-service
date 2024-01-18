@@ -4,13 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.File;
 import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class Profile {
+    private Long id;
 
     private String description;
 
@@ -26,7 +26,16 @@ public class Profile {
 
     private String banner;
 
-    private File avatarFile;
-
-    private File bannerFile;
+    public Profile prototype(){
+        return new Profile(
+                id,
+                description,
+                location,
+                website,
+                birthDate,
+                joinDate,
+                avatar,
+                banner
+        );
+    }
 }

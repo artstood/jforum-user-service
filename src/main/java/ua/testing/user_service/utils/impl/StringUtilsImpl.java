@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 import ua.testing.user_service.utils.StringUtils;
 
 import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 
 @Component
 public class StringUtilsImpl implements StringUtils {
@@ -24,5 +25,10 @@ public class StringUtilsImpl implements StringUtils {
     @Override
     public boolean isEmpty(String str) {
         return org.apache.commons.lang3.StringUtils.isEmpty(str);
+    }
+
+    @Override
+    public String randomUUID() {
+        return UUID.randomUUID().toString();
     }
 }

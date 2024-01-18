@@ -1,6 +1,7 @@
 package ua.testing.user_service.utils;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.Path;
 
 public interface FileSystemUtils {
@@ -17,4 +18,10 @@ public interface FileSystemUtils {
     void mkDirs(String first, String... path);
 
     Path pathOf(String first, String... path);
+
+    File writeBytes(Path path, byte[] bytes) throws IOException;
+
+    void delete(Path path) throws IOException;
+
+    byte[] readBytes(Path path) throws IOException;
 }

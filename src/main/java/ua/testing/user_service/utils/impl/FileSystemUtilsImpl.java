@@ -5,6 +5,8 @@ import ua.testing.user_service.exception.utils.FileSystemUtilsException;
 import ua.testing.user_service.utils.FileSystemUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Component
@@ -53,5 +55,21 @@ public class FileSystemUtilsImpl implements FileSystemUtils {
     @Override
     public Path pathOf(String first, String... path) {
         return Path.of(first, path);
+    }
+
+    @Override
+    public File writeBytes(Path path, byte[] bytes) throws IOException {
+
+        return Files.write(path, bytes).toFile();
+    }
+
+    @Override
+    public void delete(Path path) throws IOException {
+        Files.delete(path);
+    }
+
+    @Override
+    public byte[] readBytes(Path path) throws IOException {
+        return Files.readAllBytes(path);
     }
 }

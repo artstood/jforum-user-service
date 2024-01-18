@@ -25,6 +25,10 @@ import java.lang.annotation.Target;
                         schema = @Schema(implementation = SimpleErrorResponse.class))),
         @ApiResponse(responseCode = "400", description = "User not found",
                 content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = SimpleErrorResponse.class)))})
-public @interface PatchUserOpenAPI {
+                        schema = @Schema(implementation = SimpleErrorResponse.class))),
+        @ApiResponse(responseCode = "400", description = "Cannot read incoming files",
+                content = @Content(mediaType = "application/json",
+                        schema = @Schema(implementation = SimpleErrorResponse.class)))
+})
+public @interface PutUserOpenAPI {
 }

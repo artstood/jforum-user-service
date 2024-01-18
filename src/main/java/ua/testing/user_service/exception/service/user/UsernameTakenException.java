@@ -1,4 +1,4 @@
-package ua.testing.user_service.service.exception;
+package ua.testing.user_service.exception.service.user;
 
 import lombok.experimental.StandardException;
 

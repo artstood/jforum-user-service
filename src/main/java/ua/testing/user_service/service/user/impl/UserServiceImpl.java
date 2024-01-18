@@ -2,20 +2,22 @@ package ua.testing.user_service.service.user.impl;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ua.testing.user_service.exception.service.profile.ProfileService;
+import ua.testing.user_service.exception.service.user.UserNotFoundException;
+import ua.testing.user_service.exception.service.user.UsernameTakenException;
 import ua.testing.user_service.mapper.user.UserPersistenceMapper;
+import ua.testing.user_service.model.profile.Profile;
 import ua.testing.user_service.model.user.PasswordUser;
 import ua.testing.user_service.model.user.User;
 import ua.testing.user_service.model.user.UserData;
 import ua.testing.user_service.repository.UserRepository;
-import ua.testing.user_service.service.exception.UserNotFoundException;
-import ua.testing.user_service.service.exception.UsernameTakenException;
-import ua.testing.user_service.service.profile.ProfileService;
 import ua.testing.user_service.service.user.UserService;
 import ua.testing.user_service.service.user.UserTagService;
 import ua.testing.user_service.utils.StringUtils;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -66,20 +68,24 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateUser(Long userId, PasswordUser updatedUser) {
+    public User updateUser(Long userId, User newUserInfo, byte[] avatar, byte[] banner) {
+        Optional<UserData> existingOldUser = userRepository.findById(userId);
 
-        if (!userRepository.existsById(userId)) {
+        if (existingOldUser.isEmpty()) {
             throw new UserNotFoundException(String.format(USER_NOT_FOUND, userId));
         }
 
-        if (userRepository.existsByUserTag(updatedUser.getUserTag())) {
-            throw new UsernameTakenException(String.format(EMAIL_ALREADY_PRESENT, updatedUser.getUserTag()));
+        if (userRepository.existsByUserTag(newUserInfo.getUserTag())) {
+            throw new UsernameTakenException(String.format(EMAIL_ALREADY_PRESENT, newUserInfo.getUserTag()));
         }
 
-        UserData updatedEntity = userPersistenceMapper.mapToData(updatedUser);
-        updatedEntity.setId(userId);
+        Profile updatedProfile = profileService.updateProfileMedia(existingOldUser.get().getProfile(), newUserInfo.getProfile(), avatar, banner);
+        newUserInfo.setProfile(updatedProfile);
 
-        return userPersistenceMapper.mapToUser(userRepository.save(updatedEntity));
+        UserData updatedUser = userRepository.save(
+                userPersistenceMapper.updateUserFields(existingOldUser.get(), newUserInfo));
+
+        return userPersistenceMapper.mapToUser(updatedUser);
     }
 
     @Override

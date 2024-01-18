@@ -6,4 +6,6 @@ public interface StringUtils {
     String sha256Encode(String str);
 
     boolean isEmpty(String str);
+
+    String randomUUID();
 }

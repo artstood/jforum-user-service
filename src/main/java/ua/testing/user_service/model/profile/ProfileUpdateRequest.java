@@ -1,15 +1,12 @@
 package ua.testing.user_service.model.profile;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class ProfileResponse {
+public class ProfileUpdateRequest {
+
     private String description;
 
     private String location;
@@ -17,6 +14,5 @@ public class ProfileResponse {
     private String website;
 
     private LocalDate birthDate;
-
-    private LocalDate joinDate;
 }
+
